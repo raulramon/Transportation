@@ -1,0 +1,130 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(plotly)
+
+library(lubridate)
+library(ggplot2)
+library(gganimate)
+library(devtools)
+library(gifski)
+library(png)
+library(leaflet)
+```
+
+
+```{r}
+library(readr)
+table_01_71q113 <- read.csv("table_01_71q113.csv", stringsAsFactors = TRUE)
+```
+
+##Notes:
+
+#The Roadway Congestion Index (RCI) is a measure of vehicle travel density on major roadways in an urban area. An RCI exceeding 1.0 indicates an undesirable congestion level, on an average, on the freeways and principal arterial street systems during the peak period. The urban areas included are those containing over 500,000 people and several smaller places mostly chosen by previous sponsors of the Texas Transportation Institute study on mobility. Population group is based on 2010 population.
+
+
+
+##Source:
+
+#Texas Transportation Institute, Congestion Data for Your City, Excel spreadsheet of the base statistics for the 101 urban areas and population group summary statistics (College Station, TX: 2012), available at http://mobility.tamu.edu as of Feb. 6, 2013.
+
+##Description:
+
+#KEY: NA = not applicable; R = revised.
+
+#Very large urban areas – 3 million and over population.
+
+#Large urban areas – 1 million to less than 3 million population.
+
+#Medium urban areas – 500,000 to less than 1 million population.
+
+#Small urban areas – less than 500,000 population.
+
+#a Rank is based on the calculated point change with the highest number corresponding #to a rank of 1.
+
+#b Average weighted by vehicle miles traveled in city.
+
+```{r}
+transp <- table_01_71q113
+transp
+```
+
+```{r}
+transp$yg1 <- c("X1982", "X1992", "X2002")
+```
+
+```{r}
+transp$yg1 <- yg1
+transp
+```
+
+
+```{r}
+large_p <- c("Dallas -Fort Worth-Arlington, TX","Chicago, IL-IN","Boston, MA-NH-RI", "Atlanta, GA", "Detroit, MI", "Houston, TX", "Los Angeles-Long Beach-Santa Ana, CA", "Miami, FL","New York-Newark, NY-NJ-CT","Philadelphia, PA-NJ-DE-MD","Phoenix, AZ","San Diego, CA","San Francisco-Oakland, CA","Seattle, WA", "Washington, DC-VA-MD")
+```
+
+```{r}
+Large_selected_cities <- subset(transp, subset = 
+Urban.area %in% large_p)
+```
+
+```{r}
+Large_selected_cities
+```
+
+
+```{r}
+lscP=ggplot(Large_selected_cities,
+            mapping = aes(x =yg1, fill =Urban.area)) +
+  geom_density(alpha = .5, fill = 5) +
+   labs(title = "Figure 1 Congestion  Grown in U.S. very larger cities Over the Past 20 Years",
+                    x = "20 Years",
+                    y = "Hours Delayper Traveler",
+        caption = "source:Texas Transportation Institute")
+ggplotly(lscP)
+ggsave(file = "Congestion_G_USA.png", plot = lscP)
+```
+
+
+```{r}
+tr <- ggplot(data =transp, mapping = aes(x=Urban.area, 
+                                         y = Population.group)) +
+  geom_point(color = "green") +
+  theme(axis.text.x = element_text(angle =90)) +
+  labs(title = "Figure 2 Distribution of Population Group by Urban Area",
+       x = "Urban Area",
+       y = " Population Group",
+       caption = " Source:Texas Transportation Institute")
+ggplotly(tr)
+ggsave(file = "PopGroup_UrbaArea.png", plot = tr)
+```
+
+
+```{r}
+trc <- ggplot(data = transp, aes(x = Population.group, fill = factor(yg1))) +
+  geom_bar(position = "dodge", mapping = aes(y = ..prop.., group = factor(yg1))) +
+  labs(title = "Figure 3 Growing Congestion in U.S. cities Over the Past 20 Years",
+                    x = "Population Area Size",
+                    y = "Hours Delayper Traveler",
+       caption = "source:Texas Transportation Institute")
+ggplotly(trc)
+ggsave(file = "GrowCongUS20Year.png", plot = trc)
+```
+ 
+
+```{r}
+pbox <- ggplot(transp, aes(x = Population.group, y = X.R..2010, fill = Population.group)) + geom_boxplot() +
+  theme(legend.position = "none") +
+  labs(title = "Population Group in 2010",
+       subtitle = "Congestion grow 0-1",
+       x = "Population Group",
+       y = "congestion in 2010",
+       caption = "source:Texas Transportation Institute")
+ggplotly(pbox)
+ggsave(file = "Pop2010.png", plot = pbox)
+```
+
