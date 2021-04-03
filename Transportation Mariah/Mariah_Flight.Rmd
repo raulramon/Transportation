@@ -1,0 +1,77 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(plotly)
+
+library(lubridate)
+library(ggplot2)
+library(gganimate)
+library(devtools)
+library(gifski)
+library(png)
+library(leaflet)
+```
+
+
+
+---
+title: "Discussion 3"
+output: html_notebook
+---
+
+Find a data set on Transportation and create one interactive plot using plotly. All of your axes, titles, subtitles, and captions must be labeled and all of the visualizations must be colorful and easy to read. 
+
+```{r}
+#install.packages("plotly")
+#install.packages("htmlwidgets")
+```
+
+```{r}
+library(plotly)
+packageVersion('plotly')
+```
+
+```{r}
+flights <- read.csv("feb-20-us-flight-delay.csv", stringsAsFactors = TRUE)
+flights
+```
+
+```{r}
+originflights
+```
+
+
+```{r}
+originflights <- flights %>% group_by(DAY_OF_WEEK) %>% summarise(Avg = mean(DISTANCE))
+a <- ggplot(originflights, aes(x = DAY_OF_WEEK, y = Avg, fill = DAY_OF_WEEK)) +
+  geom_bar(stat = "identity") + 
+  theme(legend.position = "none") +
+  labs(title = "Average Distance of Days of Week",
+       subtitle = "The graph shows the average flight distance of every day of the week",
+       x = "Days of the Week",
+       y = "Average Distance") 
+a
+#ggplotly(a)
+```
+
+
+
+```{r}
+aF <- ggplot(flights, aes(x = DAY_OF_WEEK, 
+                                fill = DISTANCE,
+                          color = ORIGIN)) + 
+              geom_bar(position = "dodge") + 
+  theme(legend.position = "none") +
+  labs(title = "Distance of Days of Week",
+       subtitle = "The graph shows the distribution for flight distance of every day of the week",
+       x = "Days of the Week",
+       y = "Distance") 
+
+ggplotly(aF)
+ggsave(file = "DistanceDaysWeek.png", plot = aF)
+```
+
