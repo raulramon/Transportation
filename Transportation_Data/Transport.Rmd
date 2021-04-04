@@ -86,7 +86,7 @@ lscP=ggplot(Large_selected_cities,
                     y = "Hours Delayper Traveler",
         caption = "source:Texas Transportation Institute")
 ggplotly(lscP)
-ggsave(file = "Congestion_G_USA.png", plot = lscP)
+#ggsave(file = "Congestion_G_USA.png", plot = lscP)
 ```
 
 
@@ -100,9 +100,22 @@ tr <- ggplot(data =transp, mapping = aes(x=Urban.area,
        y = " Population Group",
        caption = " Source:Texas Transportation Institute")
 ggplotly(tr)
-ggsave(file = "PopGroup_UrbaArea.png", plot = tr)
+#ggsave(file = "PopGroup_UrbaArea.png", plot = tr)
 ```
 
+```{r}
+trL <- ggplot(data =transp, mapping = aes(x=Urban.area, 
+                                         y = Population.group)) +
+  geom_point(color = "green") +
+  theme(axis.text.x = element_text(size =5, angle =90)) +
+  labs(title = "Figure 2 Distribution of Population Group by Urban Area",
+       x = "Urban Area",
+       y = " Population Group",
+       caption = " Source:Texas Transportation Institute")
+ggplotly(trL)
+ggsave(file = "PopGroup_UrbaAreatrL.png", plot = trL)
+```
+ 
 
 ```{r}
 trc <- ggplot(data = transp, aes(x = Population.group, fill = factor(yg1))) +
@@ -112,7 +125,18 @@ trc <- ggplot(data = transp, aes(x = Population.group, fill = factor(yg1))) +
                     y = "Hours Delayper Traveler",
        caption = "source:Texas Transportation Institute")
 ggplotly(trc)
-ggsave(file = "GrowCongUS20Year.png", plot = trc)
+#ggsave(file = "GrowCongUS20Year.png", plot = trc)
+```
+ 
+```{r}
+trcL <- ggplot(data = transp, aes(x = Population.group, fill = factor(yg1))) +
+  geom_bar(position = "dodge", mapping = aes(y = ..prop.., group = factor(yg1))) +
+  labs(title = "Figure 3 Growing Congestion in U.S. cities Over the Past 20 Years",
+                    x = "Population Area Size",
+                    y = "Hours Delayper Traveler",
+       caption = "source:Texas Transportation Institute")
+ggplotly(trcL)
+ggsave(file = "GrowCongUS20YearL.png", plot = trcL)
 ```
  
 
@@ -125,6 +149,37 @@ pbox <- ggplot(transp, aes(x = Population.group, y = X.R..2010, fill = Populatio
        y = "congestion in 2010",
        caption = "source:Texas Transportation Institute")
 ggplotly(pbox)
-ggsave(file = "Pop2010.png", plot = pbox)
+#ggsave(file = "Pop2010.png", plot = pbox)
+```
+
+```{r}
+pboxL <- ggplot(transp, aes(x = Population.group, y = X.R..2010, fill = Population.group)) + geom_boxplot() +
+  theme(legend.position = "none") +
+  labs(title = "Population Group in 2010",
+       subtitle = "Congestion grow 0-1",
+       x = "Population Group",
+       y = "congestion in 2010",
+       caption = "source:Texas Transportation Institute")
+ggplotly(pboxL)
+ggsave(file = "Pop2010L.png", plot = pboxL)
+```
+
+
+```{r}
+summary(transp$Population.group)
+```
+
+```{r}
+transp$Population.group <- recode(transp$Population.group,
+                                  "439 Areas" = "NA",
+                          "Very large" = "Very Large",
+                          "Very Large" = "Very Large",
+                          "Large" = "Large", 
+                          "Medium" = "Medium",
+                          "Small" = "Small") 
+```
+
+```{r}
+summary(transp$Population.group)
 ```
 
